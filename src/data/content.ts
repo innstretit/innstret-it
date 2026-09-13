@@ -16,6 +16,18 @@ export const BRAND_DATA = {
   whatsappLink: 'https://wa.me/51958092111?text=Hola%20INNSTRET%20IT%2C%20deseo%20solicitar%20informaci%C3%B3n%20y%20cotizaci%C3%B3n%20sobre%20sus%20servicios.',
 };
 
+/**
+ * Configuración central de SEO, AEO y URLs canónicas.
+ * Actualiza 'siteUrl' aquí cuando se conecte el dominio personalizado definitivo.
+ */
+export const SITE_CONFIG = {
+  siteUrl: 'https://ais-pre-6lk6mrbys5brlxj7yco2ge-731825937273.us-east1.run.app',
+  ogImage: 'https://res.cloudinary.com/agu65138/image/upload/v1789324228/og-innstretit.jpg',
+  title: 'INNSTRET IT | Procesos, Digitalización y Automatización',
+  metaDescription: 'INNSTRET IT ayuda a empresas a optimizar procesos y operaciones mediante digitalización, automatización, gestión TI y soluciones tecnológicas prácticas.',
+  ogDescription: 'Transformamos procesos operativos en sistemas más eficientes, estructurados y digitales.',
+};
+
 export const SERVICES_DATA: ServicePillar[] = [
   {
     id: 'procesos',

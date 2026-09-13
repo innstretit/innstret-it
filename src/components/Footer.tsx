@@ -18,7 +18,7 @@ export const Footer: React.FC = () => {
             <div className="bg-white p-2.5 rounded-xl inline-block mb-4 shadow-sm">
               <img
                 src={BRAND_DATA.logoUrl}
-                alt="INNSTRET IT - Procesos · Digitalización · Automatización"
+                alt="INNSTRET IT"
                 className="h-10 w-auto object-contain"
                 referrerPolicy="no-referrer"
               />
@@ -55,13 +55,13 @@ export const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="#por-que-elegirnos" className="hover:text-white transition-colors">
-                  ¿Por qué nosotros?
+                <a href="#metodologia" className="hover:text-white transition-colors">
+                  Metodología
                 </a>
               </li>
               <li>
-                <a href="#metodologia" className="hover:text-white transition-colors">
-                  Metodología
+                <a href="#por-que-elegirnos" className="hover:text-white transition-colors">
+                  ¿Por qué nosotros?
                 </a>
               </li>
               <li>

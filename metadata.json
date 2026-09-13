@@ -1,6 +1,6 @@
 {
   "name": "INNSTRET IT",
-  "description": "Consultoría tecnológica en optimización y digitalización de procesos, automatización operativa y gestión de servicios TI.",
+  "description": "INNSTRET IT ayuda a empresas a optimizar procesos y operaciones mediante digitalización, automatización, gestión TI y soluciones tecnológicas prácticas.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

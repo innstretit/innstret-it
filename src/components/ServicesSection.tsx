@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Workflow, Cpu, Server, GraduationCap, Check, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { SERVICES_DATA } from '../data/content';
-import { ServicePillar } from '../types';
 
 interface ServicesSectionProps {
   onSelectServiceForQuote: (serviceTitle: string) => void;
@@ -10,201 +9,238 @@ interface ServicesSectionProps {
 export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServiceForQuote }) => {
   const [selectedServiceId, setSelectedServiceId] = useState<string>(SERVICES_DATA[0].id);
 
-  const activeService = SERVICES_DATA.find((s) => s.id === selectedServiceId) || SERVICES_DATA[0];
-
-  const getServiceIcon = (iconName: string, className: string = 'w-6 h-6') => {
-    switch (iconName) {
-      case 'Workflow':
-        return <Workflow className={className} />;
-      case 'Cpu':
-        return <Cpu className={className} />;
-      case 'Server':
-        return <Server className={className} />;
-      case 'GraduationCap':
-      default:
-        return <GraduationCap className={className} />;
-    }
-  };
+  const activeIndex = SERVICES_DATA.findIndex((s) => s.id === selectedServiceId);
+  const activeService = SERVICES_DATA[activeIndex] || SERVICES_DATA[0];
 
   return (
     <section id="servicios" className="py-20 md:py-28 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <div className="max-w-3xl mb-12 sm:mb-16 text-left">
           <div className="inline-flex items-center space-x-2 bg-[#F3F3F3] px-3.5 py-1 rounded-full border border-gray-200 mb-3.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#207BF8]">
-              Nuestras Soluciones
+            <span className="w-1.5 h-1.5 rounded-full bg-[#207BF8]" />
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#00164A]">
+              Servicios Especializados
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00164A] tracking-tight mb-4">
-            Servicios orientados a simplificar y potenciar la operación de tu negocio
+            Cuatro servicios integrados para estructurar tu empresa
           </h2>
-          <p className="text-base text-gray-600 leading-relaxed">
-            Abordamos de forma integral las dimensiones de procesos, automatización, soporte de TI y formación humana, 
-            garantizando que la tecnología sea una palanca real de eficiencia.
+          <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl">
+            Cada servicio resuelve una dimensión crítica de tu negocio: flujos, automatizaciones, 
+            estabilidad tecnológica y autonomía del personal.
           </p>
         </div>
 
-        {/* Desktop / Tablet Service Tab Buttons */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
-          {SERVICES_DATA.map((service) => {
-            const isSelected = service.id === selectedServiceId;
-            return (
-              <button
-                key={service.id}
-                id={`service-nav-btn-${service.id}`}
-                onClick={() => setSelectedServiceId(service.id)}
-                className={`flex flex-col items-start text-left p-4 sm:p-5 rounded-xl border transition-all duration-200 focus:outline-none ${
-                  isSelected
-                    ? 'bg-[#00164A] text-white border-[#00164A] shadow-md ring-2 ring-[#207BF8]/40'
-                    : 'bg-[#F3F3F3]/70 hover:bg-white text-[#00164A] border-gray-200 hover:border-gray-300'
-                }`}
-              >
-                <div
-                  className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors ${
-                    isSelected ? 'bg-[#207BF8] text-white' : 'bg-white text-[#207BF8] border border-gray-200'
+        {/* Mobile Compact Horizontal Selector (< lg) */}
+        <div className="lg:hidden mb-8">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-none">
+            {SERVICES_DATA.map((service, index) => {
+              const isSelected = service.id === selectedServiceId;
+              const formattedNum = `0${index + 1}`;
+              return (
+                <button
+                  key={service.id}
+                  onClick={() => setSelectedServiceId(service.id)}
+                  className={`shrink-0 inline-flex items-center space-x-2 px-4 py-2.5 rounded-full text-xs font-semibold transition-all duration-200 border cursor-pointer ${
+                    isSelected
+                      ? 'bg-[#00164A] text-white border-[#00164A] shadow-sm'
+                      : 'bg-[#F3F3F3] text-[#00164A]/75 border-gray-200 hover:bg-white hover:border-gray-300'
                   }`}
                 >
-                  {getServiceIcon(service.iconName, 'w-5 h-5')}
-                </div>
-                <span className="text-xs uppercase tracking-wider font-semibold opacity-80 mb-1">
-                  {service.badge}
-                </span>
-                <span className="text-base font-bold leading-snug">
-                  {service.title}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Highlighted Service Detail Card */}
-        <div className="bg-white rounded-2xl border border-gray-200/90 shadow-lg p-6 sm:p-10 mb-16 transition-all duration-300">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Left Column: Scope and Deliverables */}
-            <div className="lg:col-span-7 flex flex-col justify-between">
-              <div>
-                <div className="inline-flex items-center space-x-2 bg-[#EBF3FF] text-[#207BF8] text-xs font-semibold px-3 py-1 rounded-md mb-3">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>{activeService.badge}</span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-[#00164A] mb-2">
-                  {activeService.title}
-                </h3>
-                <p className="text-base text-[#207BF8] font-medium mb-4">
-                  {activeService.tagline}
-                </p>
-                <p className="text-base text-gray-600 mb-6 leading-relaxed">
-                  {activeService.description}
-                </p>
-
-                <h4 className="text-sm font-bold uppercase tracking-wider text-[#00164A] mb-3">
-                  Alcance y servicios incluidos:
-                </h4>
-                <ul className="space-y-3 mb-8">
-                  {activeService.items.map((item, idx) => (
-                    <li key={idx} className="flex items-start space-x-3 text-sm text-[#00164A]">
-                      <span className="w-5 h-5 rounded-full bg-[#EBF3FF] text-[#207BF8] flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">
-                        ✓
-                      </span>
-                      <span className="font-semibold text-gray-800">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Action Button */}
-              <div className="pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <button
-                  id={`quote-service-btn-${activeService.id}`}
-                  onClick={() => onSelectServiceForQuote(activeService.title)}
-                  className="inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] text-white font-semibold text-sm px-6 py-3.5 rounded-xl shadow-sm transition-all duration-200"
-                >
-                  <span>Solicitar cotización de {activeService.title}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span className={`font-mono text-[11px] ${isSelected ? 'text-[#207BF8]' : 'text-gray-400'}`}>
+                    {formattedNum}
+                  </span>
+                  <span>{service.title}</span>
                 </button>
-              </div>
-            </div>
-
-            {/* Right Column: Business Impact / Expected Benefits */}
-            <div className="lg:col-span-5 bg-[#F3F3F3] rounded-xl p-6 sm:p-7 border border-gray-200/80">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-4">
-                Impacto operativo esperado
-              </h4>
-              <div className="space-y-4">
-                {activeService.benefits.map((benefit, bIdx) => (
-                  <div key={bIdx} className="bg-white p-4 rounded-xl border border-gray-200/70 shadow-2xs flex items-start space-x-3">
-                    <div className="w-2 h-2 rounded-full bg-[#207BF8] mt-2 shrink-0" />
-                    <p className="text-sm font-medium text-[#00164A] leading-relaxed">
-                      {benefit}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 p-4 rounded-lg bg-[#00164A]/5 border border-[#00164A]/10 text-xs text-[#00164A]/80">
-                <span className="font-bold">Principio INNSTRET IT:</span> Toda implementación responde a una necesidad real detectada en la operación, evitando sobrecostos o herramientas innecesarias.
-              </div>
-            </div>
-
+              );
+            })}
           </div>
         </div>
 
-        {/* 4 Cards Quick Overview Matrix (All services visible at once for quick scanning) */}
-        <div className="border-t border-gray-200 pt-14">
-          <div className="text-center mb-8">
-            <h3 className="text-lg font-bold text-[#00164A]">
-              Visión general de las 4 líneas de servicio
-            </h3>
-            <p className="text-xs text-gray-500 mt-1">
-              Haz clic en cualquier servicio para consultar su alcance detallado o cotizarlo directamente
-            </p>
+        {/* Desktop Two-Column Layout (lg+) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
+          
+          {/* LEFT COLUMN: Vertical Modular Selector */}
+          <div className="hidden lg:flex lg:col-span-5 xl:col-span-4 flex-col space-y-3">
+            {SERVICES_DATA.map((service, index) => {
+              const isSelected = service.id === selectedServiceId;
+              const formattedNum = `0${index + 1}`;
+
+              return (
+                <button
+                  key={service.id}
+                  id={`module-selector-${service.id}`}
+                  onClick={() => setSelectedServiceId(service.id)}
+                  className={`w-full text-left p-6 rounded-2xl transition-all duration-300 relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] ${
+                    isSelected
+                      ? 'bg-[#00164A] text-white shadow-xl translate-x-1.5'
+                      : 'bg-white hover:bg-[#F8FAFD] text-[#00164A] border border-gray-200/90 hover:border-[#207BF8]/30 shadow-2xs hover:shadow-xs'
+                  }`}
+                >
+                  {/* Active Indicator Accent Line on the Left */}
+                  {isSelected && (
+                    <div className="absolute left-0 top-4 bottom-4 w-1.5 bg-[#207BF8] rounded-r-full shadow-[0_0_12px_rgba(32,123,248,0.7)]" />
+                  )}
+
+                  <div className="flex items-start justify-between">
+                    <div>
+                      {/* Monospace Step Number */}
+                      <span
+                        className={`text-xs font-mono font-bold tracking-widest block mb-2 transition-colors ${
+                          isSelected ? 'text-[#207BF8]' : 'text-gray-400 group-hover:text-[#207BF8]'
+                        }`}
+                      >
+                        {formattedNum}
+                      </span>
+
+                      {/* Main Service Title */}
+                      <h3 className="text-lg xl:text-xl font-bold tracking-tight mb-1.5 leading-snug">
+                        {service.title}
+                      </h3>
+
+                      {/* Subtitle / Value Pillar */}
+                      <p
+                        className={`text-xs font-medium tracking-wide uppercase ${
+                          isSelected ? 'text-gray-300' : 'text-gray-500'
+                        }`}
+                      >
+                        {service.badge}
+                      </p>
+                    </div>
+
+                    {/* Subtle status dot or arrow on active */}
+                    <div className="pt-1">
+                      {isSelected ? (
+                        <div className="w-6 h-6 rounded-full bg-[#207BF8]/20 flex items-center justify-center text-[#207BF8]">
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </div>
+                      ) : (
+                        <div className="w-2 h-2 rounded-full bg-gray-300 group-hover:bg-[#207BF8]/60 transition-colors mt-2 mr-1" />
+                      )}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {SERVICES_DATA.map((srv) => (
-              <div
-                key={srv.id}
-                className={`rounded-xl p-5 border transition-all duration-200 flex flex-col justify-between ${
-                  selectedServiceId === srv.id
-                    ? 'border-[#207BF8] bg-[#EBF3FF]/30 shadow-xs'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
-                }`}
-              >
+          {/* RIGHT COLUMN: Active Module Detailed Content */}
+          <div className="lg:col-span-7 xl:col-span-8 bg-white lg:pl-4">
+            <div
+              key={activeService.id}
+              className="animate-in fade-in-50 duration-200"
+            >
+              {/* Category Eyebrow */}
+              <div className="flex items-center space-x-2 text-xs font-mono font-bold uppercase tracking-widest text-[#207BF8] mb-3">
+                <span>SERVICIO 0{activeIndex + 1}</span>
+                <span>·</span>
+                <span className="text-gray-400">{activeService.badge}</span>
+              </div>
+
+              {/* Main Service Headline */}
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#00164A] tracking-tight mb-3">
+                {activeService.title.toUpperCase()}
+              </h3>
+
+              {/* Tagline */}
+              <p className="text-lg sm:text-xl font-medium text-[#207BF8] mb-5">
+                {activeService.tagline}
+              </p>
+
+              {/* Comprehensive Description */}
+              <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-3xl mb-8">
+                {activeService.description}
+              </p>
+
+              {/* Clean Editorial Divider */}
+              <div className="h-px bg-gray-200/80 my-8" />
+
+              {/* Two-Column Grid for Alcance & Beneficios without nested box clutter */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 mb-10">
+                
+                {/* Scope Section (Alcance) */}
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="w-9 h-9 rounded-lg bg-white border border-gray-200 text-[#207BF8] flex items-center justify-center">
-                      {getServiceIcon(srv.iconName, 'w-4 h-4')}
-                    </div>
-                    <span className="text-[11px] font-semibold uppercase text-gray-500">
-                      {srv.badge}
-                    </span>
-                  </div>
-                  <h4 className="font-bold text-sm text-[#00164A] mb-1.5">
-                    {srv.title}
+                  <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-[#00164A] mb-4 flex items-center space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#207BF8]" />
+                    <span>Alcance del servicio</span>
                   </h4>
-                  <ul className="text-xs text-gray-600 space-y-1 mb-4">
-                    {srv.items.map((it, i) => (
-                      <li key={i} className="flex items-center space-x-1.5">
-                        <span className="text-[#207BF8] font-bold">•</span>
-                        <span className="truncate">{it}</span>
+
+                  <ul className="space-y-3.5">
+                    {activeService.items.map((item, idx) => (
+                      <li key={idx} className="flex items-start space-x-3 text-sm sm:text-base text-[#00164A]">
+                        <div className="w-5 h-5 rounded-full bg-[#EBF3FF] text-[#207BF8] flex items-center justify-center shrink-0 mt-0.5">
+                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                        </div>
+                        <span className="font-medium text-gray-800 leading-snug">{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
+                {/* Benefits / Operational Impact Section */}
+                <div>
+                  <h4 className="text-xs font-mono font-bold uppercase tracking-widest text-[#00164A] mb-4 flex items-center space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#207BF8]" />
+                    <span>Beneficios / Impacto operativo</span>
+                  </h4>
+
+                  <ul className="space-y-3.5">
+                    {activeService.benefits.map((benefit, bIdx) => (
+                      <li key={bIdx} className="flex items-start space-x-3 text-sm sm:text-base text-[#00164A]">
+                        <div className="w-5 h-5 rounded-full bg-[#EBF3FF] text-[#207BF8] flex items-center justify-center shrink-0 mt-0.5">
+                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                        </div>
+                        <span className="font-medium text-gray-800 leading-snug">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+              </div>
+
+              {/* Clean Editorial Divider */}
+              <div className="h-px bg-gray-200/80 my-8" />
+
+              {/* High-Ticket Action Button */}
+              <div className="pt-2">
                 <button
-                  onClick={() => onSelectServiceForQuote(srv.title)}
-                  className="w-full text-xs font-semibold text-[#207BF8] hover:text-[#1664D1] py-2 px-3 bg-white rounded-lg border border-gray-200 hover:border-[#207BF8]/50 flex items-center justify-center space-x-1 transition-colors"
+                  id={`quote-service-btn-${activeService.id}`}
+                  onClick={() => onSelectServiceForQuote(activeService.title)}
+                  className="inline-flex items-center justify-center space-x-3 bg-[#00164A] hover:bg-[#0A2563] text-white text-base font-semibold px-8 py-4 rounded-full shadow-md hover:shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] hover:scale-[1.01] cursor-pointer group"
                 >
-                  <span>Cotizar servicio</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Solicitar cotización de {activeService.title}</span>
+                  <ArrowRight className="w-4 h-4 text-[#207BF8] group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
-            ))}
+
+            </div>
           </div>
+
+        </div>
+
+        {/* Semantic Structured Index for Search Engines & AEO (Always accessible in DOM) */}
+        <div className="sr-only" aria-label="Catálogo semántico completo de servicios INNSTRET IT">
+          {SERVICES_DATA.map((srv) => (
+            <article key={`seo-${srv.id}`}>
+              <h3>{srv.title}</h3>
+              <p>{srv.tagline}</p>
+              <p>{srv.description}</p>
+              <h4>Alcance del servicio:</h4>
+              <ul>
+                {srv.items.map((it, i) => (
+                  <li key={i}>{it}</li>
+                ))}
+              </ul>
+              <h4>Beneficios:</h4>
+              <ul>
+                {srv.benefits.map((b, i) => (
+                  <li key={i}>{b}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
         </div>
 
       </div>
