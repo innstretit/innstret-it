@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, MessageCircle, CheckCircle2, Sparkles } from 'lucide-react';
 import { BRAND_DATA } from '../data/content';
 
@@ -7,6 +7,13 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Immediate activation on mount for crisp timing
+    setMounted(true);
+  }, []);
+
   const bgImageUrl =
     'https://res.cloudinary.com/agu65138/image/upload/v1789322034/hf_20260913_175303_93b03153-1025-4373-bcf2-f740f9fc8050.png';
 
@@ -21,13 +28,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
     <section
       id="hero-section"
       className="relative min-h-[88vh] flex items-center pt-36 pb-24 md:pt-44 md:pb-32 overflow-hidden text-[#00164A] selection:bg-[#207BF8]/20 selection:text-[#00164A]"
-      style={{
-        backgroundImage: `url(${bgImageUrl})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
     >
+      {/* Background with subtle ambient micro-scale (1–1.5% max, almost subconscious, zero LCP delay) */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[6000ms] ease-out will-change-transform scale-[1.015]"
+        style={{
+          backgroundImage: `url(${bgImageUrl})`,
+        }}
+      />
+
       {/* Calibrated white veil overlay: lowers opacity so the organic background waves are visibly noticeable while keeping navy typography razor-sharp */}
       <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/60 to-white/35 pointer-events-none" />
       <div className="absolute inset-0 bg-white/20 pointer-events-none" />
@@ -37,10 +46,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
         {/* Full-width editorial single-column layout: grand visual presence */}
         <div className="max-w-5xl text-left">
           
-          {/* Pill Badge */}
+          {/* 1. Pill Badge */}
           <div
             id="hero-badge"
-            className="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-md border border-gray-200/90 px-4 py-1.5 rounded-full mb-8 text-[#00164A] shadow-xs transition-colors"
+            className={`inline-flex items-center space-x-2 bg-white/90 backdrop-blur-md border border-gray-200/90 px-4 py-1.5 rounded-full mb-8 text-[#00164A] shadow-xs transition-all duration-400 ease-out ${
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+            }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-[#207BF8]" />
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#00164A]">
@@ -48,10 +59,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
             </span>
           </div>
 
-          {/* Monumental Typographic Headline in High-Contrast Deep Navy and Digital Blue */}
+          {/* 2. Monumental Typographic Headline in High-Contrast Deep Navy and Digital Blue */}
           <h1
             id="hero-main-title"
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold text-[#00164A] tracking-tight leading-[1.04] mb-8"
+            className={`text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold text-[#00164A] tracking-tight leading-[1.04] mb-8 transition-all duration-500 ease-out delay-75 ${
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+            }`}
           >
             <span className="font-serif italic font-light text-[#00164A] block text-3xl sm:text-5xl md:text-6xl lg:text-[4.8rem] mb-2 sm:mb-3">
               Transformamos
@@ -63,10 +76,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
             , estructurados y digitales.
           </h1>
 
-          {/* Subtitle with high contrast and readable line length */}
+          {/* 3. Subtitle with high contrast and readable line length */}
           <p
             id="hero-subtitle"
-            className="text-lg sm:text-xl md:text-2xl text-[#00164A]/85 leading-relaxed max-w-3xl mb-12 font-normal"
+            className={`text-lg sm:text-xl md:text-2xl text-[#00164A]/85 leading-relaxed max-w-3xl mb-12 font-normal transition-all duration-500 ease-out delay-150 ${
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+            }`}
           >
             Estructuramos, digitalizamos y automatizamos las operaciones diarias de tu empresa.{' '}
             <strong className="text-[#00164A] font-semibold">
@@ -75,17 +90,21 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
             ; luego aplicamos la tecnología que simplifica el trabajo y asegura la continuidad de tu negocio.
           </p>
 
-          {/* Action Buttons in High-Ticket Rounded Pills */}
-          <div id="hero-cta-group" className="flex flex-wrap items-center gap-4 mb-14">
-            
+          {/* 4. Action Buttons in High-Ticket Rounded Pills */}
+          <div
+            id="hero-cta-group"
+            className={`flex flex-wrap items-center gap-4 mb-14 transition-all duration-500 ease-out delay-200 ${
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+            }`}
+          >
             {/* Primary Solid Navy Pill with Digital Blue Arrow Accent */}
             <button
               id="hero-primary-quote-cta"
               onClick={onOpenQuoteModal}
-              className="inline-flex items-center justify-center space-x-3 bg-[#00164A] hover:bg-[#0A2563] text-white text-base font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] hover:scale-[1.02] cursor-pointer"
+              className="inline-flex items-center justify-center space-x-3 bg-[#00164A] hover:bg-[#0A2563] active:scale-[0.99] text-white text-base font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] cursor-pointer group"
             >
               <span>Solicitar una cotización</span>
-              <ArrowRight className="w-4 h-4 text-[#207BF8]" />
+              <ArrowRight className="w-4 h-4 text-[#207BF8] group-hover:translate-x-1 transition-transform duration-200" />
             </button>
 
             {/* Secondary Crisp White Pill with subtle border and WhatsApp icon */}
@@ -94,9 +113,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
               href={BRAND_DATA.whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center space-x-2.5 bg-white/95 hover:bg-white text-[#00164A] border border-gray-300 text-base font-semibold px-7 py-4 rounded-full shadow-xs hover:shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+              className="inline-flex items-center justify-center space-x-2.5 bg-white/95 hover:bg-white active:scale-[0.99] text-[#00164A] border border-gray-300 text-base font-semibold px-7 py-4 rounded-full shadow-xs hover:shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 group"
             >
-              <MessageCircle className="w-4 h-4 text-[#207BF8]" />
+              <MessageCircle className="w-4 h-4 text-[#207BF8] group-hover:scale-105 transition-transform duration-200" />
               <span>Escribir por WhatsApp</span>
             </a>
 
@@ -110,10 +129,12 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
             </button>
           </div>
 
-          {/* Trust Pillars in a clean, elevated horizontal row */}
+          {/* 5. Trust Pillars in a clean, elevated horizontal row */}
           <div
             id="hero-trust-pillars"
-            className="pt-8 border-t border-gray-200/80 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl"
+            className={`pt-8 border-t border-gray-200/80 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl transition-all duration-500 ease-out delay-300 ${
+              mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+            }`}
           >
             <div className="flex items-start space-x-3">
               <div className="w-5 h-5 rounded-full bg-[#EBF3FF] border border-[#207BF8]/25 flex items-center justify-center shrink-0 mt-0.5">
@@ -163,3 +184,4 @@ export const Hero: React.FC<HeroProps> = ({ onOpenQuoteModal }) => {
     </section>
   );
 };
+

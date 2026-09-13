@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useInView } from '../hooks/useInView';
 
 interface MethodologyProps {
   onOpenQuoteModal: () => void;
@@ -65,14 +66,73 @@ const PHASES_DATA: PhaseData[] = [
 
 export const Methodology: React.FC<MethodologyProps> = ({ onOpenQuoteModal }) => {
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
+  const { ref: sectionRef, isInView } = useInView<HTMLElement>({ threshold: 0.1 });
   const activePhase = PHASES_DATA[activeStepIndex];
 
+  // Mobile horizontal scroll references and indicators
+  const mobileScrollRef = useRef<HTMLDivElement | null>(null);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
+  const [canScrollRight, setCanScrollRight] = useState<boolean>(true);
+
+  const updateScrollIndicators = useCallback(() => {
+    const el = mobileScrollRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanScrollLeft(scrollLeft > 6);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 6);
+  }, []);
+
+  useEffect(() => {
+    updateScrollIndicators();
+    const handleResize = () => updateScrollIndicators();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [updateScrollIndicators]);
+
+  const handleSelectPhase = (idx: number) => {
+    setActiveStepIndex(idx);
+
+    const container = mobileScrollRef.current;
+    const button = buttonRefs.current[idx];
+    if (!container || !button) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+
+    // Center the target button within the visible scroll container
+    const targetScrollLeft =
+      container.scrollLeft +
+      (buttonRect.left - containerRect.left) -
+      (containerRect.width - buttonRect.width) / 2;
+
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    container.scrollTo({
+      left: Math.max(0, targetScrollLeft),
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    });
+
+    // Re-verify indicators after smooth scroll animation completes
+    setTimeout(updateScrollIndicators, 350);
+  };
+
   return (
-    <section id="metodologia" className="py-24 md:py-32 bg-[#F3F3F3] border-y border-gray-200/80 relative">
+    <section
+      ref={sectionRef}
+      id="metodologia"
+      className="py-24 md:py-32 bg-[#F3F3F3] border-y border-gray-200/80 relative"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-14 md:mb-16 text-left">
+        <div
+          className={`max-w-3xl mb-14 md:mb-16 text-left transition-all duration-500 ease-out ${
+            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`}
+        >
           <div className="inline-flex items-center space-x-2 bg-white px-3.5 py-1 rounded-full border border-gray-200 shadow-2xs mb-3.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#207BF8]" />
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#00164A]">
@@ -87,42 +147,77 @@ export const Methodology: React.FC<MethodologyProps> = ({ onOpenQuoteModal }) =>
           </p>
         </div>
 
-        {/* Mobile Compact Selector (< lg) */}
-        <div className="lg:hidden mb-8">
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-none">
+        {/* Mobile Horizontal Scroll Selector (< lg) with Edge Indicators & Scroll-Snap */}
+        <div className="lg:hidden mb-8 relative w-full">
+          {/* Subtle Left Fade Indicator */}
+          <div
+            className={`pointer-events-none absolute left-0 top-0 bottom-0 w-8 z-10 bg-gradient-to-r from-[#F3F3F3] via-[#F3F3F3]/80 to-transparent transition-opacity duration-300 ${
+              canScrollLeft ? 'opacity-100' : 'opacity-0'
+            }`}
+            aria-hidden="true"
+          />
+
+          {/* Subtle Right Fade Indicator */}
+          <div
+            className={`pointer-events-none absolute right-0 top-0 bottom-0 w-8 z-10 bg-gradient-to-l from-[#F3F3F3] via-[#F3F3F3]/80 to-transparent transition-opacity duration-300 ${
+              canScrollRight ? 'opacity-100' : 'opacity-0'
+            }`}
+            aria-hidden="true"
+          />
+
+          {/* Scrollable Track */}
+          <div
+            ref={mobileScrollRef}
+            onScroll={updateScrollIndicators}
+            className="flex items-center gap-2.5 overflow-x-auto pb-2 pt-0.5 scroll-smooth snap-x snap-mandatory no-scrollbar touch-pan-x"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+            }}
+          >
             {PHASES_DATA.map((phase, idx) => {
               const isActive = activeStepIndex === idx;
               return (
                 <button
                   key={phase.id}
+                  ref={(el) => {
+                    buttonRefs.current[idx] = el;
+                  }}
                   type="button"
-                  onClick={() => setActiveStepIndex(idx)}
-                  className={`shrink-0 inline-flex items-center space-x-2 px-4 py-3 rounded-full text-xs font-semibold transition-all duration-200 border cursor-pointer min-h-[44px] ${
+                  onClick={() => handleSelectPhase(idx)}
+                  className={`snap-start shrink-0 inline-flex items-center space-x-2.5 px-4.5 py-3 rounded-full text-xs font-semibold transition-all duration-250 border cursor-pointer min-h-[44px] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] ${
                     isActive
                       ? 'bg-[#00164A] text-white border-[#00164A] shadow-xs'
-                      : 'bg-white text-gray-600 border-gray-200/90 hover:border-gray-300'
+                      : 'bg-white text-gray-700 border-gray-200/90 hover:border-gray-300'
                   }`}
                   aria-pressed={isActive}
                 >
-                  <span className={`font-mono font-bold text-xs ${isActive ? 'text-[#207BF8]' : 'text-gray-400'}`}>
+                  <span
+                    className={`font-mono font-bold text-xs ${
+                      isActive ? 'text-[#207BF8]' : 'text-gray-400'
+                    }`}
+                  >
                     {phase.step}
                   </span>
-                  <span className="tracking-wider">{phase.tag}</span>
+                  <span className="tracking-wider whitespace-nowrap">{phase.tag}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Desktop Interactive Timeline (lg+) */}
-        <div className="hidden lg:block mb-12">
+        {/* Desktop Interactive Timeline (lg+) - Visual Protagonist */}
+        <div
+          className={`hidden lg:block mb-12 transition-all duration-500 ease-out delay-100 ${
+            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`}
+        >
           <div className="relative max-w-5xl mx-auto px-8">
             
             {/* Background Rail */}
-            <div className="absolute top-5.5 left-14 right-14 h-1 bg-gray-200/90 rounded-full -z-0">
+            <div className="absolute top-5.5 left-14 right-14 h-1 bg-gray-300/80 rounded-full -z-0">
               {/* Progress Line */}
               <div
-                className="h-full bg-[#207BF8] rounded-full transition-all duration-500 ease-out"
+                className="h-full bg-[#207BF8] rounded-full transition-all duration-400 ease-out"
                 style={{ width: `${(activeStepIndex / (PHASES_DATA.length - 1)) * 100}%` }}
               />
             </div>
@@ -138,12 +233,12 @@ export const Methodology: React.FC<MethodologyProps> = ({ onOpenQuoteModal }) =>
                     key={phase.id}
                     type="button"
                     onClick={() => setActiveStepIndex(idx)}
-                    className="flex flex-col items-center group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8]/60 rounded-xl py-1 transition-transform"
+                    className="flex flex-col items-center group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8]/60 rounded-xl py-1 transition-transform active:scale-[0.98]"
                     aria-pressed={isActive}
                   >
                     {/* Node circle */}
                     <div
-                      className={`w-11 h-11 rounded-full flex items-center justify-center font-mono font-bold text-xs transition-all duration-300 border-2 ${
+                      className={`w-11 h-11 rounded-full flex items-center justify-center font-mono font-bold text-xs transition-all duration-250 border-2 ${
                         isActive
                           ? 'bg-[#00164A] text-white border-[#207BF8] shadow-md ring-4 ring-[#207BF8]/20 scale-105'
                           : isPassed
@@ -178,13 +273,17 @@ export const Methodology: React.FC<MethodologyProps> = ({ onOpenQuoteModal }) =>
           </div>
         </div>
 
-        {/* Single Protagonist Content Panel (Replaces the 4 simultaneous cards) */}
-        <div className="relative bg-white rounded-3xl p-7 sm:p-10 lg:p-14 border border-gray-200/90 shadow-sm min-h-[360px] flex flex-col justify-center transition-all duration-300">
+        {/* Single Protagonist Content Panel with Refined Subtle Borders & Shadows */}
+        <div
+          className={`relative bg-white/95 rounded-3xl p-7 sm:p-10 lg:p-12 border border-gray-200/80 shadow-2xs min-h-[340px] flex flex-col justify-center transition-all duration-300 ${
+            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`}
+        >
           <div
             key={activePhase.id}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center transition-opacity duration-300 motion-reduce:transition-none"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center animate-in fade-in-0 slide-in-from-bottom-2 duration-250 ease-out motion-reduce:animate-none"
           >
-            {/* Left 35%: Identification of the Phase */}
+            {/* Left 38%: Identification of the Phase */}
             <div className="lg:col-span-5 text-left border-b lg:border-b-0 lg:border-r border-gray-200/80 pb-6 lg:pb-0 lg:pr-8">
               
               {/* Badge */}
@@ -204,7 +303,7 @@ export const Methodology: React.FC<MethodologyProps> = ({ onOpenQuoteModal }) =>
               </p>
             </div>
 
-            {/* Right 65%: Explanation & Deliverable */}
+            {/* Right 62%: Explanation & Deliverable */}
             <div className="lg:col-span-7 text-left lg:pl-4 flex flex-col justify-center">
               
               {/* Paragraph Explanation */}
@@ -231,7 +330,11 @@ export const Methodology: React.FC<MethodologyProps> = ({ onOpenQuoteModal }) =>
         </div>
 
         {/* Clean Integrated Closing CTA (Unboxed, spacious, minimal) */}
-        <div className="mt-14 sm:mt-18 pt-10 border-t border-gray-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div
+          className={`mt-14 sm:mt-18 pt-10 border-t border-gray-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 transition-all duration-500 ease-out delay-200 ${
+            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`}
+        >
           <div className="text-left max-w-xl">
             <h3 className="text-xl sm:text-2xl font-bold text-[#00164A] tracking-tight mb-2">
               ¿En qué etapa se encuentra tu operación?
@@ -245,10 +348,10 @@ export const Methodology: React.FC<MethodologyProps> = ({ onOpenQuoteModal }) =>
             id="methodology-cta-quote-btn"
             type="button"
             onClick={onOpenQuoteModal}
-            className="inline-flex items-center justify-center space-x-3 bg-[#00164A] hover:bg-[#0A2563] text-white text-sm sm:text-base font-semibold px-7 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-md hover:shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] hover:scale-[1.01] cursor-pointer shrink-0"
+            className="inline-flex items-center justify-center space-x-3 bg-[#00164A] hover:bg-[#0A2563] active:scale-[0.99] text-white text-sm sm:text-base font-semibold px-7 py-3.5 sm:px-8 sm:py-4 rounded-full shadow-md hover:shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] cursor-pointer shrink-0 group"
           >
             <span>Solicitar diagnóstico inicial</span>
-            <ArrowRight className="w-4 h-4 text-[#207BF8]" />
+            <ArrowRight className="w-4 h-4 text-[#207BF8] group-hover:translate-x-1 transition-transform duration-200" />
           </button>
         </div>
 
@@ -269,3 +372,4 @@ export const Methodology: React.FC<MethodologyProps> = ({ onOpenQuoteModal }) =>
     </section>
   );
 };
+

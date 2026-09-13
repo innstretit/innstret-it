@@ -40,14 +40,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
       id="main-navbar"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 text-[#00164A] ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-2xs border-b border-gray-100 py-3'
-          : 'bg-white/80 backdrop-blur-md border-b border-gray-200/50 py-4'
+          ? 'bg-white/95 backdrop-blur-md shadow-2xs border-b border-gray-100 py-1 sm:py-1.5'
+          : 'bg-white/85 backdrop-blur-md border-b border-gray-200/50 py-1.5 sm:py-2'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between min-h-[58px] sm:min-h-[66px] lg:min-h-[72px]">
           
-          {/* Logo container strictly using provided Cloudinary image */}
+          {/* Logo container strictly using provided Cloudinary image, scaled to occupy almost entire navbar height */}
           <a
             id="brand-logo-link"
             href="#hero-section"
@@ -55,14 +55,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
               e.preventDefault();
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8]/50 rounded-lg py-1"
+            className="flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8]/50 rounded-lg py-0"
             aria-label="INNSTRET IT - Inicio"
           >
             <img
               id="brand-logo-img"
               src={BRAND_DATA.logoUrl}
               alt="INNSTRET IT"
-              className="h-10 sm:h-12 md:h-13 w-auto object-contain transition-transform duration-200 hover:opacity-95"
+              className="h-12 sm:h-14 md:h-16 lg:h-18 max-h-[74px] w-auto object-contain transition-transform duration-200 hover:scale-[1.02]"
               referrerPolicy="no-referrer"
             />
           </a>
@@ -74,9 +74,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleLinkClick(e, link.href)}
-                className="text-sm font-medium text-[#00164A]/80 hover:text-[#207BF8] transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] rounded"
+                className="relative text-sm font-medium text-[#00164A]/80 hover:text-[#00164A] transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] rounded group"
               >
-                {link.label}
+                <span>{link.label}</span>
+                {/* Discrete expanding line accent on hover */}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#207BF8] transition-all duration-250 ease-out group-hover:w-full rounded-full" />
               </a>
             ))}
           </nav>
@@ -86,10 +88,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
             <button
               id="navbar-quote-button"
               onClick={() => onOpenQuoteModal()}
-              className="inline-flex items-center justify-center space-x-2 bg-[#00164A] hover:bg-[#0A2563] text-white text-xs sm:text-sm font-semibold px-6 py-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8]"
+              className="inline-flex items-center justify-center space-x-2 bg-[#00164A] hover:bg-[#0A2563] active:scale-[0.99] text-white text-xs sm:text-sm font-semibold px-6 py-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] group"
             >
               <span>Solicitar cotización</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#207BF8]" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#207BF8] group-hover:translate-x-1 transition-transform duration-200" />
             </button>
           </div>
 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Mail, MessageCircle, Send, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { Mail, MessageCircle, Send, CheckCircle2, ShieldCheck, ArrowRight, Loader2 } from 'lucide-react';
 import { BRAND_DATA, SERVICES_DATA } from '../data/content';
 import { ContactFormData } from '../types';
+import { useInView } from '../hooks/useInView';
 
 interface ContactSectionProps {
   preselectedService?: string;
@@ -19,6 +20,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { ref: sectionRef, isInView } = useInView<HTMLElement>({ threshold: 0.1 });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -34,7 +36,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
     setTimeout(() => {
       setIsLoading(false);
       setIsSubmitted(true);
-    }, 400);
+    }, 450);
   };
 
   const generateWhatsAppMessage = () => {
@@ -45,11 +47,15 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
   };
 
   return (
-    <section id="contacto" className="py-24 md:py-32 bg-white relative">
+    <section ref={sectionRef} id="contacto" className="py-24 md:py-32 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-14 text-left">
+        <div
+          className={`max-w-3xl mb-14 text-left transition-all duration-500 ease-out ${
+            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`}
+        >
           <div className="inline-flex items-center space-x-2 bg-[#F3F3F3] px-3.5 py-1 rounded-full border border-gray-200 mb-3.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#207BF8]" />
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#00164A]">
@@ -68,9 +74,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* Left Column: Official Quotation Form */}
-          <div className="lg:col-span-7 bg-[#F3F3F3]/70 rounded-2xl p-6 sm:p-10 border border-gray-200/90 shadow-2xs">
+          <div
+            className={`lg:col-span-7 bg-[#F3F3F3]/70 rounded-2xl p-6 sm:p-10 border border-gray-200/90 shadow-2xs transition-all duration-500 ease-out delay-100 ${
+              isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+            }`}
+          >
             {isSubmitted ? (
-              <div id="contact-form-success" className="py-8 text-center bg-white rounded-xl p-6 border border-gray-200">
+              <div id="contact-form-success" className="py-8 text-center bg-white rounded-xl p-6 border border-gray-200 animate-in fade-in-0 zoom-in-95 duration-250 ease-out">
                 <div className="w-16 h-16 bg-[#EBF3FF] text-[#207BF8] rounded-full flex items-center justify-center mx-auto mb-5 border border-[#207BF8]/20">
                   <CheckCircle2 className="w-9 h-9" />
                 </div>
@@ -94,7 +104,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                     href={generateWhatsAppMessage()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] text-white font-semibold text-sm px-6 py-3 rounded-xl shadow-xs transition-all"
+                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] active:scale-[0.99] text-white font-semibold text-sm px-6 py-3 rounded-xl shadow-xs transition-all"
                   >
                     <MessageCircle className="w-4 h-4" />
                     <span>Enviar copia por WhatsApp</span>
@@ -112,7 +122,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                         mensaje: '',
                       });
                     }}
-                    className="w-full sm:w-auto inline-flex items-center justify-center text-xs font-semibold text-gray-600 hover:text-[#00164A] py-3 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="w-full sm:w-auto inline-flex items-center justify-center text-xs font-semibold text-gray-600 hover:text-[#00164A] active:scale-[0.99] py-3 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
                   >
                     <span>Enviar otra consulta</span>
                   </button>
@@ -143,7 +153,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                       value={formData.nombre}
                       onChange={handleChange}
                       placeholder="Ej. Juan Pérez"
-                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8] focus:border-transparent transition-all"
+                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                     />
                   </div>
 
@@ -159,7 +169,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                       value={formData.empresa}
                       onChange={handleChange}
                       placeholder="Nombre de tu empresa"
-                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8] focus:border-transparent transition-all"
+                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                     />
                   </div>
                 </div>
@@ -178,7 +188,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                       value={formData.whatsapp}
                       onChange={handleChange}
                       placeholder="+51 987 654 321"
-                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8] focus:border-transparent transition-all"
+                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                     />
                   </div>
 
@@ -195,7 +205,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                       value={formData.correo}
                       onChange={handleChange}
                       placeholder="nombre@empresa.com"
-                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8] focus:border-transparent transition-all"
+                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                     />
                   </div>
                 </div>
@@ -210,7 +220,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                     name="servicioInteres"
                     value={formData.servicioInteres}
                     onChange={handleChange}
-                    className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8] focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150 cursor-pointer"
                   >
                     <option value="Todos / Evaluación General">Evaluación integral de procesos y TI</option>
                     {SERVICES_DATA.map((s) => (
@@ -234,7 +244,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                     value={formData.mensaje}
                     onChange={handleChange}
                     placeholder="Describe los procesos que deseas optimizar, tareas que deseas automatizar o soporte TI requerido..."
-                    className="w-full p-3.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8] focus:border-transparent transition-all"
+                    className="w-full p-3.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                   />
                 </div>
 
@@ -244,14 +254,17 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                     type="submit"
                     id="submit-contact-form-btn"
                     disabled={isLoading}
-                    className="w-full inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] text-white font-semibold text-base py-3.5 px-6 rounded-xl shadow-xs transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] focus-visible:ring-offset-2 disabled:opacity-75"
+                    className="w-full inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] active:scale-[0.99] text-white font-semibold text-base py-3.5 px-6 rounded-xl shadow-xs transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] focus-visible:ring-offset-2 disabled:opacity-75 cursor-pointer group"
                   >
                     {isLoading ? (
-                      <span>Enviando información...</span>
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Enviando información...</span>
+                      </>
                     ) : (
                       <>
                         <span>Solicitar información</span>
-                        <Send className="w-4 h-4" />
+                        <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                       </>
                     )}
                   </button>
@@ -266,7 +279,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
           </div>
 
           {/* Right Column: Priority Channels */}
-          <div className="lg:col-span-5 flex flex-col space-y-6">
+          <div
+            className={`lg:col-span-5 flex flex-col space-y-6 transition-all duration-500 ease-out delay-200 ${
+              isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+            }`}
+          >
             
             {/* WhatsApp Priority Channel */}
             <div className="bg-[#00164A] text-white rounded-2xl p-7 shadow-sm border border-[#00164A]">
@@ -298,7 +315,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
                 href={BRAND_DATA.whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] text-white font-semibold text-sm py-3.5 px-4 rounded-xl transition-colors shadow-xs"
+                className="w-full inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] active:scale-[0.99] text-white font-semibold text-sm py-3.5 px-4 rounded-xl transition-colors shadow-xs group cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Conversar por WhatsApp</span>
@@ -357,3 +374,4 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
     </section>
   );
 };
+

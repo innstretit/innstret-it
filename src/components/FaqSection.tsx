@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
+import { useInView } from '../hooks/useInView';
 
 interface FaqItem {
   id: string;
@@ -49,17 +50,26 @@ const FAQ_DATA: FaqItem[] = [
 export const FaqSection: React.FC = () => {
   // Allow toggling an active item; opening one closes others for a clear scannable view
   const [openId, setOpenId] = useState<string | null>('faq-01');
+  const { ref: sectionRef, isInView } = useInView<HTMLElement>({ threshold: 0.1 });
 
   const toggleItem = (id: string) => {
     setOpenId((prev) => (prev === id ? null : id));
   };
 
   return (
-    <section id="faq" className="py-20 md:py-28 bg-[#F3F3F3] border-t border-gray-200/80 relative">
+    <section
+      ref={sectionRef}
+      id="faq"
+      className="py-20 md:py-28 bg-[#F3F3F3] border-t border-gray-200/80 relative"
+    >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Editorial Section Header */}
-        <div className="mb-12 md:mb-16 text-left">
+        <div
+          className={`mb-12 md:mb-16 text-left transition-all duration-500 ease-out ${
+            isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`}
+        >
           <div className="inline-flex items-center space-x-2 bg-white px-3.5 py-1 rounded-full border border-gray-200 shadow-2xs mb-3.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#207BF8]" />
             <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#00164A]">
@@ -75,14 +85,20 @@ export const FaqSection: React.FC = () => {
         </div>
 
         {/* Single-Column Vertical Minimalist Accordion */}
-        <div className="border-t border-gray-300/80 divide-y divide-gray-300/80">
-          {FAQ_DATA.map((item) => {
+        <div className="border-t border-gray-300/70 divide-y divide-gray-300/70">
+          {FAQ_DATA.map((item, index) => {
             const isOpen = openId === item.id;
             const buttonId = `faq-btn-${item.id}`;
             const panelId = `faq-panel-${item.id}`;
+            const delayClasses = ['delay-100', 'delay-150', 'delay-200', 'delay-250', 'delay-300'][index] || 'delay-100';
 
             return (
-              <div key={item.id} className="py-2 transition-colors">
+              <div
+                key={item.id}
+                className={`py-2 transition-all duration-500 ease-out ${delayClasses} ${
+                  isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2.5'
+                }`}
+              >
                 <h3>
                   <button
                     type="button"
@@ -108,7 +124,7 @@ export const FaqSection: React.FC = () => {
 
                     {/* Right: Fine '+' icon rotating smoothly to 'x' when open */}
                     <div
-                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300 ${
+                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 border transition-all duration-250 ease-out ${
                         isOpen
                           ? 'bg-[#00164A] border-[#00164A] text-white rotate-45'
                           : 'bg-white border-gray-300/80 text-[#00164A] group-hover:border-[#207BF8] group-hover:text-[#207BF8]'
@@ -125,12 +141,12 @@ export const FaqSection: React.FC = () => {
                   id={panelId}
                   role="region"
                   aria-labelledby={buttonId}
-                  className={`grid transition-all duration-300 ease-out overflow-hidden ${
+                  className={`grid transition-all duration-250 ease-out overflow-hidden ${
                     isOpen ? 'grid-rows-[1fr] opacity-100 pb-5' : 'grid-rows-[0fr] opacity-0 pb-0'
                   }`}
                 >
                   <div className="overflow-hidden pl-7 sm:pl-10 pr-4">
-                    <p className="text-sm sm:text-base text-gray-600 font-normal leading-relaxed max-w-2xl">
+                    <p className="text-sm sm:text-base text-gray-600 font-normal leading-relaxed max-w-2xl transition-opacity duration-200">
                       {item.answer}
                     </p>
                   </div>
@@ -144,3 +160,4 @@ export const FaqSection: React.FC = () => {
     </section>
   );
 };
+

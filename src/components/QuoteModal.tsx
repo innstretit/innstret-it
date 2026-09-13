@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Send, CheckCircle2, MessageCircle, ArrowRight } from 'lucide-react';
+import { X, Send, CheckCircle2, MessageCircle, Loader2 } from 'lucide-react';
 import { BRAND_DATA, SERVICES_DATA } from '../data/content';
 
 interface QuoteModalProps {
@@ -52,7 +52,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     setTimeout(() => {
       setIsLoading(false);
       setIsSubmitted(true);
-    }, 400);
+    }, 450);
   };
 
   const getWhatsAppQuoteUrl = () => {
@@ -84,7 +84,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="text-gray-300 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors focus:outline-none"
+            className="text-gray-300 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors focus:outline-none cursor-pointer"
             aria-label="Cerrar modal de cotización"
           >
             <X className="w-5 h-5" />
@@ -94,7 +94,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
         {/* Content */}
         <div className="p-6 sm:p-8">
           {isSubmitted ? (
-            <div className="text-center py-6">
+            <div className="text-center py-6 animate-in fade-in-0 zoom-in-95 duration-250 ease-out">
               <div className="w-16 h-16 bg-[#EBF3FF] text-[#207BF8] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#207BF8]/20">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
@@ -110,7 +110,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   href={getWhatsAppQuoteUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm"
+                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] active:scale-[0.99] text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors shadow-sm"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>Enviar datos al WhatsApp</span>
@@ -118,7 +118,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
 
                 <button
                   onClick={onClose}
-                  className="w-full sm:w-auto text-xs font-semibold text-gray-600 hover:text-[#00164A] py-3 px-5 border border-gray-200 rounded-xl"
+                  className="w-full sm:w-auto text-xs font-semibold text-gray-600 hover:text-[#00164A] active:scale-[0.99] py-3 px-5 border border-gray-200 rounded-xl cursor-pointer"
                 >
                   Cerrar ventana
                 </button>
@@ -138,7 +138,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 <select
                   value={servicio}
                   onChange={(e) => setServicio(e.target.value)}
-                  className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]"
+                  className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150 cursor-pointer"
                 >
                   {SERVICES_DATA.map((s) => (
                     <option key={s.id} value={s.title}>
@@ -163,7 +163,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     value={nombre}
                     onChange={(e) => setNombre(e.target.value)}
                     placeholder="Ej. Martín Vega"
-                    className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]"
+                    className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                   />
                 </div>
 
@@ -176,7 +176,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     value={empresa}
                     onChange={(e) => setEmpresa(e.target.value)}
                     placeholder="Ej. Corporación Andina"
-                    className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]"
+                    className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                   />
                 </div>
               </div>
@@ -193,7 +193,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     placeholder="+51 958 000 000"
-                    className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]"
+                    className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                   />
                 </div>
 
@@ -207,7 +207,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                     value={correo}
                     onChange={(e) => setCorreo(e.target.value)}
                     placeholder="contacto@empresa.com"
-                    className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]"
+                    className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                   />
                 </div>
               </div>
@@ -223,7 +223,7 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                   value={mensaje}
                   onChange={(e) => setMensaje(e.target.value)}
                   placeholder="Detalles sobre los procesos a optimizar, volumen aproximado de tareas o necesidades de TI..."
-                  className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]"
+                  className="w-full p-2.5 bg-[#F3F3F3] border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                 />
               </div>
 
@@ -232,10 +232,19 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] text-white font-semibold text-sm py-3.5 px-4 rounded-xl shadow transition-all duration-200 disabled:opacity-70"
+                  className="w-full inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] active:scale-[0.99] text-white font-semibold text-sm py-3.5 px-4 rounded-xl shadow transition-all duration-200 disabled:opacity-70 cursor-pointer group"
                 >
-                  {isLoading ? <span>Enviando...</span> : <span>Solicitar información</span>}
-                  <Send className="w-4 h-4" />
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Enviando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Solicitar información</span>
+                      <Send className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-200" />
+                    </>
+                  )}
                 </button>
               </div>
             </form>
@@ -245,3 +254,4 @@ export const QuoteModal: React.FC<QuoteModalProps> = ({
     </div>
   );
 };
+

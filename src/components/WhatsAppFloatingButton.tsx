@@ -8,7 +8,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
   return (
     <div
       id="whatsapp-floating-container"
-      className="fixed bottom-6 right-6 z-50 flex items-center space-x-2"
+      className="fixed bottom-[calc(16px+env(safe-area-inset-bottom,0px))] right-4 sm:bottom-6 sm:right-6 z-50 flex items-center space-x-2"
     >
       {/* Tooltip / Prompt bubble */}
       {showTooltip && (
@@ -20,7 +20,7 @@ export const WhatsAppFloatingButton: React.FC = () => {
           <span>¿Hablamos por WhatsApp?</span>
           <button
             onClick={() => setShowTooltip(false)}
-            className="text-gray-400 hover:text-gray-600 p-0.5 rounded-full"
+            className="text-gray-400 hover:text-gray-600 p-0.5 rounded-full cursor-pointer"
             aria-label="Cerrar notificación"
           >
             <X className="w-3.5 h-3.5" />
@@ -34,11 +34,11 @@ export const WhatsAppFloatingButton: React.FC = () => {
         href={BRAND_DATA.whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-[#25D366]/40 group"
+        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-lg sm:shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#25D366]/40 cursor-pointer group"
         aria-label="Contactar a INNSTRET IT por WhatsApp"
       >
         <svg
-          className="w-7 h-7 fill-current"
+          className="w-6 h-6 sm:w-7 sm:h-7 fill-current"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >

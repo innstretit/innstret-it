@@ -130,7 +130,7 @@ export const Footer: React.FC = () => {
 
           <button
             onClick={scrollToTop}
-            className="inline-flex items-center space-x-1.5 text-gray-300 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/5"
+            className="inline-flex items-center space-x-1.5 text-gray-300 hover:text-white transition-all duration-200 active:scale-95 p-2 rounded-lg hover:bg-white/5 cursor-pointer"
             aria-label="Volver al inicio"
           >
             <span>Volver arriba</span>
