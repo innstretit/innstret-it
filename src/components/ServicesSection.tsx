@@ -35,6 +35,16 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
     return () => window.removeEventListener('resize', handleResize);
   }, [updateScrollIndicators]);
 
+  // Preload all 7 service images on mount for instant zero-latency transitions
+  useEffect(() => {
+    SERVICES_DATA.forEach((service) => {
+      if (service.image?.url) {
+        const img = new Image();
+        img.src = service.image.url;
+      }
+    });
+  }, []);
+
   const handleSelectService = (serviceId: string, index: number) => {
     setSelectedServiceId(serviceId);
 
@@ -81,11 +91,10 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#00164A] tracking-tight mb-4">
-            Cuatro servicios integrados para estructurar tu empresa
+            Soluciones tecnológicas para estructurar y potenciar tu empresa
           </h2>
           <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl">
-            Cada servicio resuelve una dimensión crítica de tu negocio: flujos, automatizaciones, 
-            estabilidad tecnológica y autonomía del personal.
+            Integramos procesos, automatización, operaciones TI, conectividad, soluciones web, equipamiento y capacitación según las necesidades de tu empresa.
           </p>
         </div>
 
@@ -161,7 +170,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
                   key={service.id}
                   id={`module-selector-${service.id}`}
                   onClick={() => setSelectedServiceId(service.id)}
-                  className={`w-full text-left p-6 rounded-2xl transition-all duration-250 relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] ${
+                  className={`w-full text-left p-4.5 xl:p-5 rounded-xl xl:rounded-2xl transition-all duration-250 relative group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] ${
                     isSelected
                       ? 'bg-[#00164A] text-white shadow-lg translate-x-1'
                       : 'bg-white hover:bg-[#F8FAFD] text-[#00164A] border border-gray-200/90 hover:border-[#207BF8]/40 shadow-2xs hover:shadow-xs'
@@ -238,9 +247,23 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
               </p>
 
               {/* Comprehensive Description */}
-              <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-3xl mb-8">
+              <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-3xl mb-6">
                 {activeService.description}
               </p>
+
+              {/* Premium Panoramic Visual Resource (16:9 Aspect Ratio with Zero CLS & Smooth Easing Transition) */}
+              <div className="relative w-full aspect-video rounded-xl sm:rounded-2xl overflow-hidden bg-[#F3F3F3] border border-gray-200/90 shadow-2xs mb-8">
+                <img
+                  key={activeService.id}
+                  src={activeService.image.url}
+                  alt={activeService.image.alt}
+                  className="w-full h-full object-cover animate-service-image select-none"
+                  loading={activeIndex === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  // @ts-ignore
+                  fetchPriority={activeIndex === 0 ? 'high' : 'auto'}
+                />
+              </div>
 
               {/* Clean Editorial Divider */}
               <div className="h-px bg-gray-200/80 my-8" />
@@ -298,7 +321,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
                   onClick={() => onSelectServiceForQuote(activeService.title)}
                   className="inline-flex items-center justify-center space-x-3 bg-[#00164A] hover:bg-[#0A2563] active:scale-[0.99] text-white text-base font-semibold px-8 py-4 rounded-full shadow-md hover:shadow-lg transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] cursor-pointer group"
                 >
-                  <span>Solicitar cotización de {activeService.title}</span>
+                  <span>{activeService.ctaText || `Solicitar cotización de ${activeService.title}`}</span>
                   <ArrowRight className="w-4 h-4 text-[#207BF8] group-hover:translate-x-1 transition-transform duration-200" />
                 </button>
               </div>

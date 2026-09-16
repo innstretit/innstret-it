@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>INNSTRET IT | Redirigiendo...</title>
+    <script>
+      (function() {
+        var base = '/innstret-it';
+        var pathname = window.location.pathname;
+        var p = pathname;
+        if (p.indexOf(base) === 0) {
+          p = p.slice(base.length);
+        }
+        if (!p || p === '/') {
+          window.location.replace(base + '/' + window.location.search + window.location.hash);
+          return;
+        }
+        var search = window.location.search;
+        var prefix = search ? search + '&' : '?';
+        var newUrl = (pathname.indexOf(base) === 0 ? base : '') + '/' + prefix + 'p=' + encodeURIComponent(p) + window.location.hash;
+        window.location.replace(newUrl);
+      })();
+    </script>
+  </head>
+  <body style="font-family: sans-serif; background: #ffffff; color: #00164A; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0;">
+    <p>Cargando INNSTRET IT...</p>
+  </body>
+</html>

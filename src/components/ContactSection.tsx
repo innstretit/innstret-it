@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Mail, MessageCircle, Send, CheckCircle2, ShieldCheck, ArrowRight, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, MessageCircle, ShieldCheck, ExternalLink } from 'lucide-react';
 import { BRAND_DATA, SERVICES_DATA } from '../data/content';
 import { ContactFormData } from '../types';
 import { useInView } from '../hooks/useInView';
 
 interface ContactSectionProps {
   preselectedService?: string;
+  onNavigatePrivacy?: () => void;
 }
 
-export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedService = '' }) => {
+export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedService = '', onNavigatePrivacy }) => {
   const [formData, setFormData] = useState<ContactFormData>({
     nombre: '',
     empresa: '',
@@ -18,32 +19,71 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
     mensaje: '',
   });
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [manualLink, setManualLink] = useState<string | null>(null);
   const { ref: sectionRef, isInView } = useInView<HTMLElement>({ threshold: 0.1 });
+
+  // Sincronizar servicio preseleccionado si cambia externamente
+  useEffect(() => {
+    if (preselectedService) {
+      setFormData((prev) => ({ ...prev, servicioInteres: preselectedService }));
+    }
+  }, [preselectedService]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (manualLink) {
+      setManualLink(null);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const buildWhatsAppUrl = (data: ContactFormData): string => {
+    const company = data.empresa.trim() ? data.empresa.trim() : 'No especificada';
+
+    const lines = [
+      'Hola INNSTRET IT 👋',
+      '',
+      'Quisiera solicitar información / cotización.',
+      '',
+      `Nombre: ${data.nombre.trim()}`,
+      `Empresa: ${company}`,
+      `Servicio de interés: ${data.servicioInteres}`,
+      `WhatsApp: ${data.whatsapp.trim()}`,
+      `Correo: ${data.correo.trim()}`,
+      '',
+      'Requerimiento:',
+      data.mensaje.trim(),
+      '',
+      'Quedo atento(a) para coordinar los siguientes pasos.',
+    ];
+
+    const message = lines.join('\n');
+    return `https://wa.me/${BRAND_DATA.whatsappRaw}?text=${encodeURIComponent(message)}`;
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSubmitted(true);
-    }, 450);
-  };
+    // Mantener las validaciones de campos obligatorios
+    if (!formData.nombre.trim() || !formData.whatsapp.trim() || !formData.correo.trim() || !formData.mensaje.trim()) {
+      return;
+    }
 
-  const generateWhatsAppMessage = () => {
-    const text = `Hola INNSTRET IT, mi nombre es ${formData.nombre || 'un interesado'}${
-      formData.empresa ? ` de la empresa ${formData.empresa}` : ''
-    }. Deseo cotizar o solicitar información sobre: ${formData.servicioInteres}. Mensaje: ${formData.mensaje || 'Deseo coordinar una reunión'}. Mi correo es: ${formData.correo || 'no especificado'}.`;
-    return `https://wa.me/${BRAND_DATA.whatsappRaw}?text=${encodeURIComponent(text)}`;
+    const whatsappUrl = buildWhatsAppUrl(formData);
+
+    try {
+      const openedWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+      if (!openedWindow || openedWindow.closed || typeof openedWindow.closed === 'undefined') {
+        // Alternativa accesible si el navegador bloquea la apertura automática
+        setManualLink(whatsappUrl);
+      } else {
+        setManualLink(null);
+      }
+    } catch {
+      setManualLink(whatsappUrl);
+    }
   };
 
   return (
@@ -79,203 +119,184 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ preselectedServi
               isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
             }`}
           >
-            {isSubmitted ? (
-              <div id="contact-form-success" className="py-8 text-center bg-white rounded-xl p-6 border border-gray-200 animate-in fade-in-0 zoom-in-95 duration-250 ease-out">
-                <div className="w-16 h-16 bg-[#EBF3FF] text-[#207BF8] rounded-full flex items-center justify-center mx-auto mb-5 border border-[#207BF8]/20">
-                  <CheckCircle2 className="w-9 h-9" />
-                </div>
-                <h3 className="text-2xl font-bold text-[#00164A] mb-2">
-                  ¡Solicitud enviada exitosamente!
+            <form id="quote-contact-form" onSubmit={handleSubmit} className="space-y-5 bg-white p-6 sm:p-8 rounded-xl border border-gray-200">
+              <div className="border-b border-gray-100 pb-4 mb-2">
+                <h3 className="text-lg font-bold text-[#00164A]">
+                  Solicitud de Cotización
                 </h3>
-                <p className="text-sm text-gray-600 max-w-md mx-auto mb-6 leading-relaxed">
-                  Gracias por comunicarte con <strong className="text-[#00164A]">INNSTRET IT</strong>. Revisaremos tu requerimiento y te contactaremos a la brevedad.
+                <p className="text-xs text-gray-500">
+                  Ingresa tus datos para preparar una propuesta adaptada a tu requerimiento.
                 </p>
-
-                <div className="bg-[#F3F3F3] p-5 rounded-xl text-left max-w-md mx-auto mb-6 text-xs text-gray-700 space-y-2 border border-gray-200">
-                  <p><strong>Nombre:</strong> {formData.nombre}</p>
-                  {formData.empresa && <p><strong>Empresa:</strong> {formData.empresa}</p>}
-                  <p><strong>WhatsApp:</strong> {formData.whatsapp}</p>
-                  <p><strong>Correo:</strong> {formData.correo}</p>
-                  <p><strong>Servicio:</strong> {formData.servicioInteres}</p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <a
-                    href={generateWhatsAppMessage()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] active:scale-[0.99] text-white font-semibold text-sm px-6 py-3 rounded-xl shadow-xs transition-all"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>Enviar copia por WhatsApp</span>
-                  </a>
-
-                  <button
-                    onClick={() => {
-                      setIsSubmitted(false);
-                      setFormData({
-                        nombre: '',
-                        empresa: '',
-                        whatsapp: '',
-                        correo: '',
-                        servicioInteres: 'Todos / Evaluación General',
-                        mensaje: '',
-                      });
-                    }}
-                    className="w-full sm:w-auto inline-flex items-center justify-center text-xs font-semibold text-gray-600 hover:text-[#00164A] active:scale-[0.99] py-3 px-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors"
-                  >
-                    <span>Enviar otra consulta</span>
-                  </button>
-                </div>
               </div>
-            ) : (
-              <form id="quote-contact-form" onSubmit={handleSubmit} className="space-y-5 bg-white p-6 sm:p-8 rounded-xl border border-gray-200">
-                <div className="border-b border-gray-100 pb-4 mb-2">
-                  <h3 className="text-lg font-bold text-[#00164A]">
-                    Solicitud de Cotización
-                  </h3>
-                  <p className="text-xs text-gray-500">
-                    Ingresa tus datos para preparar una propuesta adaptada a tu requerimiento.
-                  </p>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {/* Nombre */}
-                  <div>
-                    <label htmlFor="contact-nombre" className="block text-xs font-bold text-[#00164A] mb-1.5">
-                      Nombre completo <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="contact-nombre"
-                      name="nombre"
-                      required
-                      value={formData.nombre}
-                      onChange={handleChange}
-                      placeholder="Ej. Juan Pérez"
-                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
-                    />
-                  </div>
-
-                  {/* Empresa [Opcional] */}
-                  <div>
-                    <label htmlFor="contact-empresa" className="block text-xs font-bold text-[#00164A] mb-1.5">
-                      Empresa <span className="text-gray-400 font-normal">[Opcional]</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="contact-empresa"
-                      name="empresa"
-                      value={formData.empresa}
-                      onChange={handleChange}
-                      placeholder="Nombre de tu empresa"
-                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {/* WhatsApp */}
-                  <div>
-                    <label htmlFor="contact-whatsapp" className="block text-xs font-bold text-[#00164A] mb-1.5">
-                      WhatsApp <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      id="contact-whatsapp"
-                      name="whatsapp"
-                      required
-                      value={formData.whatsapp}
-                      onChange={handleChange}
-                      placeholder="+51 987 654 321"
-                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
-                    />
-                  </div>
-
-                  {/* Correo */}
-                  <div>
-                    <label htmlFor="contact-correo" className="block text-xs font-bold text-[#00164A] mb-1.5">
-                      Correo corporativo o personal <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      id="contact-correo"
-                      name="correo"
-                      required
-                      value={formData.correo}
-                      onChange={handleChange}
-                      placeholder="nombre@empresa.com"
-                      className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
-                    />
-                  </div>
-                </div>
-
-                {/* Servicio de interés */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* Nombre */}
                 <div>
-                  <label htmlFor="contact-servicio" className="block text-xs font-bold text-[#00164A] mb-1.5">
-                    Línea de servicio prioritaria
+                  <label htmlFor="contact-nombre" className="block text-xs font-bold text-[#00164A] mb-1.5">
+                    Nombre completo <span className="text-red-500">*</span>
                   </label>
-                  <select
-                    id="contact-servicio"
-                    name="servicioInteres"
-                    value={formData.servicioInteres}
-                    onChange={handleChange}
-                    className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150 cursor-pointer"
-                  >
-                    <option value="Todos / Evaluación General">Evaluación integral de procesos y TI</option>
-                    {SERVICES_DATA.map((s) => (
-                      <option key={s.id} value={s.title}>
-                        {s.title} ({s.badge})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* ¿En qué podemos ayudarte? */}
-                <div>
-                  <label htmlFor="contact-mensaje" className="block text-xs font-bold text-[#00164A] mb-1.5">
-                    ¿En qué podemos ayudarte? <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    id="contact-mensaje"
-                    name="mensaje"
+                  <input
+                    type="text"
+                    id="contact-nombre"
+                    name="nombre"
                     required
-                    rows={4}
-                    value={formData.mensaje}
+                    value={formData.nombre}
                     onChange={handleChange}
-                    placeholder="Describe los procesos que deseas optimizar, tareas que deseas automatizar o soporte TI requerido..."
-                    className="w-full p-3.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
+                    placeholder="Ej. Juan Pérez"
+                    className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
                   />
                 </div>
 
-                {/* Submit Action */}
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    id="submit-contact-form-btn"
-                    disabled={isLoading}
-                    className="w-full inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] active:scale-[0.99] text-white font-semibold text-base py-3.5 px-6 rounded-xl shadow-xs transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] focus-visible:ring-offset-2 disabled:opacity-75 cursor-pointer group"
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Enviando información...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Solicitar información</span>
-                        <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-                      </>
-                    )}
-                  </button>
+                {/* Empresa [Opcional] */}
+                <div>
+                  <label htmlFor="contact-empresa" className="block text-xs font-bold text-[#00164A] mb-1.5">
+                    Empresa <span className="text-gray-400 font-normal">[Opcional]</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="contact-empresa"
+                    name="empresa"
+                    value={formData.empresa}
+                    onChange={handleChange}
+                    placeholder="Nombre de tu empresa"
+                    className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* WhatsApp */}
+                <div>
+                  <label htmlFor="contact-whatsapp" className="block text-xs font-bold text-[#00164A] mb-1.5">
+                    WhatsApp <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    id="contact-whatsapp"
+                    name="whatsapp"
+                    required
+                    value={formData.whatsapp}
+                    onChange={handleChange}
+                    placeholder="+51 987 654 321"
+                    className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
+                  />
                 </div>
 
-                <div className="flex items-center justify-center space-x-2 text-[11px] text-gray-500 pt-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-gray-400" />
-                  <span>Tus datos se tratan con total confidencialidad para fines informativos.</span>
+                {/* Correo */}
+                <div>
+                  <label htmlFor="contact-correo" className="block text-xs font-bold text-[#00164A] mb-1.5">
+                    Correo corporativo o personal <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    id="contact-correo"
+                    name="correo"
+                    required
+                    value={formData.correo}
+                    onChange={handleChange}
+                    placeholder="nombre@empresa.com"
+                    className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
+                  />
                 </div>
-              </form>
-            )}
+              </div>
+
+              {/* Servicio de interés */}
+              <div>
+                <label htmlFor="contact-servicio" className="block text-xs font-bold text-[#00164A] mb-1.5">
+                  Línea de servicio prioritaria
+                </label>
+                <select
+                  id="contact-servicio"
+                  name="servicioInteres"
+                  value={formData.servicioInteres}
+                  onChange={handleChange}
+                  className="w-full px-3.5 py-2.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150 cursor-pointer"
+                >
+                  <option value="Todos / Evaluación General">Evaluación integral de procesos y TI</option>
+                  {SERVICES_DATA.map((s) => (
+                    <option key={s.id} value={s.title}>
+                      {s.title} ({s.badge})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* ¿En qué podemos ayudarte? */}
+              <div>
+                <label htmlFor="contact-mensaje" className="block text-xs font-bold text-[#00164A] mb-1.5">
+                  ¿En qué podemos ayudarte? <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="contact-mensaje"
+                  name="mensaje"
+                  required
+                  rows={4}
+                  value={formData.mensaje}
+                  onChange={handleChange}
+                  placeholder="Describe los procesos que deseas optimizar, tareas que deseas automatizar o soporte TI requerido..."
+                  className="w-full p-3.5 bg-[#F3F3F3]/60 border border-gray-200 rounded-lg text-sm text-[#00164A] placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#207BF8]/25 focus:border-[#207BF8] transition-all duration-150"
+                />
+              </div>
+
+              {/* Submit Action */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  id="submit-contact-form-btn"
+                  className="w-full inline-flex items-center justify-center space-x-2 bg-[#207BF8] hover:bg-[#1664D1] active:scale-[0.99] text-white font-semibold text-base py-3.5 px-6 rounded-xl shadow-xs transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8] focus-visible:ring-offset-2 cursor-pointer group"
+                >
+                  <span>Enviar solicitud por WhatsApp</span>
+                  <MessageCircle className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
+                </button>
+              </div>
+
+              {/* Alternativa accesible si window.open es bloqueado */}
+              {manualLink && (
+                <div
+                  id="whatsapp-manual-fallback"
+                  className="p-4 bg-[#EBF3FF] border border-[#207BF8]/25 rounded-xl text-xs text-[#00164A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in-0 duration-200"
+                >
+                  <div className="flex items-center space-x-2.5">
+                    <MessageCircle className="w-4 h-4 text-[#207BF8] shrink-0" />
+                    <span className="leading-snug">
+                      Si tu navegador bloqueó la ventana emergente, abre WhatsApp manualmente desde aquí:
+                    </span>
+                  </div>
+                  <a
+                    href={manualLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-1.5 bg-[#207BF8] hover:bg-[#1664D1] text-white font-semibold px-3.5 py-2 rounded-lg text-xs transition-colors shrink-0 shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#207BF8]"
+                  >
+                    <span>Abrir WhatsApp</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              )}
+
+              <div className="text-center text-[11px] text-gray-500 pt-1 space-y-1">
+                <div className="flex items-center justify-center space-x-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                  <span>Al continuar, tus datos se incorporarán al mensaje que enviarás voluntariamente mediante WhatsApp.</span>
+                </div>
+                <p className="text-[10px] text-gray-400">
+                  Consulta nuestra{' '}
+                  <a
+                    href="/privacidad"
+                    onClick={(e) => {
+                      if (onNavigatePrivacy) {
+                        e.preventDefault();
+                        onNavigatePrivacy();
+                      }
+                    }}
+                    className="text-[#207BF8] hover:text-[#1664D1] underline underline-offset-2 transition-colors cursor-pointer"
+                  >
+                    Política de Privacidad
+                  </a>
+                  .
+                </p>
+              </div>
+            </form>
           </div>
 
           {/* Right Column: Priority Channels */}

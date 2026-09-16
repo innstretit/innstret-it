@@ -61,8 +61,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenQuoteModal }) => {
             <img
               id="brand-logo-img"
               src={BRAND_DATA.logoUrl}
-              alt="INNSTRET IT"
-              className="h-12 sm:h-14 md:h-16 lg:h-18 max-h-[74px] w-auto object-contain transition-transform duration-200 hover:scale-[1.02]"
+              alt="INNSTRET IT - Innovación y Transformación Digital"
+              className="h-11 sm:h-13 md:h-15 lg:h-16 max-h-[70px] w-auto object-contain transition-transform duration-200 hover:scale-[1.02]"
               referrerPolicy="no-referrer"
             />
           </a>

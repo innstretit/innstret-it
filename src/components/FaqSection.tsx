@@ -36,7 +36,7 @@ const FAQ_DATA: FaqItem[] = [
     number: '04',
     question: '¿QUÉ SERVICIOS OFRECE INNSTRET IT?',
     answer:
-      'INNSTRET IT trabaja en cuatro líneas principales: Procesos y Digitalización, Automatización, Operaciones TI y Capacitación.',
+      'INNSTRET IT ofrece soluciones en siete líneas de servicio: Procesos y Digitalización, Automatización, Operaciones TI, Desarrollo Web, Redes y Networking, Venta de Equipos y Capacitación.',
   },
   {
     id: 'faq-05',

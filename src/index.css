@@ -27,6 +27,21 @@ html {
   --ease-innstret: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+@keyframes serviceImageEnter {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-service-image {
+  animation: serviceImageEnter 350ms var(--ease-innstret) forwards;
+}
+
 /* Hide scrollbar utility for mobile horizontal carousels/selectors */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

@@ -1,12 +1,19 @@
+export interface ServiceImage {
+  url: string;
+  alt: string;
+}
+
 export interface ServicePillar {
   id: string;
   title: string;
   tagline: string;
   description: string;
   items: string[];
-  iconName: 'Workflow' | 'Cpu' | 'Server' | 'GraduationCap';
+  iconName?: string;
   badge: string;
   benefits: string[];
+  ctaText?: string;
+  image?: ServiceImage;
 }
 
 export interface TargetGroup {

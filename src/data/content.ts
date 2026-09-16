@@ -2,8 +2,8 @@ import { ServicePillar, TargetGroup, MethodologyStep } from '../types';
 
 export const BRAND_DATA = {
   name: 'INNSTRET IT',
-  tagline: 'Procesos · Digitalización · Automatización',
-  logoUrl: 'https://res.cloudinary.com/agu65138/image/upload/v1789319234/INNSTRET_HorizontalTransparente.png',
+  tagline: 'Innovación y Transformación Digital',
+  logoUrl: 'https://res.cloudinary.com/agu65138/image/upload/v1789506565/INNSTRET_HorizontalTransparenteLogo_1.png',
   whatsapp: '+51 958 092 111',
   whatsappRaw: '51958092111',
   email: 'innstretit@gmail.com',
@@ -22,7 +22,7 @@ export const BRAND_DATA = {
  */
 export const SITE_CONFIG = {
   siteUrl: 'https://innstretit.github.io/innstret-it',
-  ogImage: 'https://res.cloudinary.com/agu65138/image/upload/v1789324228/og-innstretit.jpg',
+  ogImage: 'https://res.cloudinary.com/agu65138/image/upload/v1789506475/og-innstretit.jpg',
   title: 'INNSTRET IT | Procesos, Digitalización y Automatización',
   metaDescription: 'INNSTRET IT ayuda a empresas a optimizar procesos y operaciones mediante digitalización, automatización, gestión TI y soluciones tecnológicas prácticas.',
   ogDescription: 'Transformamos procesos operativos en sistemas más eficientes, estructurados y digitales.',
@@ -44,9 +44,14 @@ export const SERVICES_DATA: ServicePillar[] = [
     badge: 'Eficiencia Operativa',
     benefits: [
       'Eliminación de pasos innecesarios y duplicidad de tareas',
-      'Trazabilidad completa y visibilidad en tiempo real',
+      'Trazabilidad y orden en el flujo operativo',
       'Documentación clara y estandarización del trabajo operativo',
     ],
+    ctaText: 'Solicitar cotización de Procesos y Digitalización',
+    image: {
+      url: 'https://res.cloudinary.com/agu65138/image/upload/q_auto,f_auto/v1789529750/Premium-panoramic-website-service-banner.png',
+      alt: 'Representación conceptual de procesos empresariales y flujos de trabajo optimizados mediante digitalización estructurada',
+    },
   },
   {
     id: 'automatizacion',
@@ -62,10 +67,15 @@ export const SERVICES_DATA: ServicePillar[] = [
     iconName: 'Cpu',
     badge: 'Productividad y Precisión',
     benefits: [
-      'Disminución radical de errores operativos humanos',
+      'Disminución significativa de errores operativos manuales',
       'Aceleración de tiempos de respuesta a clientes internos y externos',
       'Conexión fluida entre plataformas y fuentes de datos',
     ],
+    ctaText: 'Solicitar cotización de Automatización',
+    image: {
+      url: 'https://res.cloudinary.com/agu65138/image/upload/q_auto,f_auto/v1789529751/Premium-panoramic-website-service-banner_1.png',
+      alt: 'Representación conceptual de automatización de tareas y procesos mediante flujos continuos y orquestación tecnológica',
+    },
   },
   {
     id: 'operaciones-ti',
@@ -86,25 +96,109 @@ export const SERVICES_DATA: ServicePillar[] = [
       'Identificación de causas raíz para prevenir incidentes recurrentes',
       'Alineación del soporte tecnológico con los objetivos de la empresa',
     ],
+    ctaText: 'Solicitar cotización de Operaciones TI',
+    image: {
+      url: 'https://res.cloudinary.com/agu65138/image/upload/q_auto,f_auto/v1789529751/Premium-panoramic-website-service-banner_2.png',
+      alt: 'Representación conceptual de operaciones de tecnología, soporte de incidentes y arquitectura coordinada',
+    },
+  },
+  {
+    id: 'desarrollo-web',
+    title: 'Desarrollo Web',
+    tagline: 'Landings y sistemas web orientados a objetivos de negocio.',
+    description:
+      'Diseñamos y desarrollamos soluciones web enfocadas en funcionalidad, experiencia de usuario y objetivos comerciales, desde páginas de aterrizaje hasta sistemas web a medida.',
+    items: [
+      'Landing pages',
+      'Sitios web corporativos',
+      'Sistemas web',
+      'Implementaciones web personalizadas',
+    ],
+    iconName: 'Globe',
+    badge: 'Soluciones Digitales',
+    benefits: [
+      'Presencia digital profesional',
+      'Soluciones adaptadas a las necesidades del negocio',
+      'Mejor experiencia para clientes y usuarios',
+    ],
+    ctaText: 'Solicitar cotización de Desarrollo Web',
+    image: {
+      url: 'https://res.cloudinary.com/agu65138/image/upload/q_auto,f_auto/v1789529751/Premium-panoramic-website-service-banner_4.png',
+      alt: 'Representación conceptual de diseño y desarrollo web mediante componentes y paneles digitales integrados',
+    },
+  },
+  {
+    id: 'redes-networking',
+    title: 'Redes y Networking',
+    tagline: 'Conectividad para una operación estable.',
+    description:
+      'Acompañamos a las empresas en la implementación y mejora de soluciones de conectividad que permitan una operación tecnológica más organizada, estable y segura.',
+    items: [
+      'Evaluación de necesidades de conectividad',
+      'Implementación y mejora de redes',
+      'Configuración de soluciones de networking',
+    ],
+    iconName: 'Network',
+    badge: 'Conectividad Empresarial',
+    benefits: [
+      'Mayor estabilidad de conexión',
+      'Mejor organización de la infraestructura de red',
+      'Continuidad de la operación tecnológica',
+    ],
+    ctaText: 'Solicitar cotización de Redes y Networking',
+    image: {
+      url: 'https://res.cloudinary.com/agu65138/image/upload/q_auto,f_auto/v1789529751/Premium-panoramic-website-service-banner_6.png',
+      alt: 'Representación conceptual de infraestructura de conectividad y topología de redes empresariales interconectadas',
+    },
+  },
+  {
+    id: 'venta-equipos',
+    title: 'Venta de Equipos',
+    tagline: 'Tecnología alineada a las necesidades de tu empresa.',
+    description:
+      'Ayudamos a seleccionar y adquirir equipos tecnológicos adecuados para las necesidades operativas de cada organización.',
+    items: [
+      'Evaluación de requerimientos',
+      'Recomendación de equipos',
+      'Venta de soluciones tecnológicas',
+    ],
+    iconName: 'Laptop',
+    badge: 'Soluciones Tecnológicas',
+    benefits: [
+      'Equipamiento adecuado al uso real',
+      'Mejor decisión de compra',
+      'Reducción de compras sobredimensionadas o inadecuadas',
+    ],
+    ctaText: 'Solicitar cotización de Equipos',
+    image: {
+      url: 'https://res.cloudinary.com/agu65138/image/upload/q_auto,f_auto/v1789529751/Premium-panoramic-website-service-banner_5.png',
+      alt: 'Representación conceptual de equipamiento informático empresarial y selección equilibrada de hardware corporativo',
+    },
   },
   {
     id: 'capacitacion',
     title: 'Capacitación',
-    tagline: 'Desarrollo de capacidades en el equipo humano',
+    tagline: 'Formación práctica para equipos y profesionales.',
     description:
-      'Formamos a tus colaboradores para asegurar una adopción efectiva de los nuevos procesos, herramientas digitales y estándares operativos.',
+      'Desarrollamos capacitaciones orientadas a fortalecer competencias tecnológicas, de gestión y automatización dentro de las organizaciones.',
     items: [
-      'Capacitaciones relacionadas con procesos',
-      'Capacitaciones en operaciones y gestión',
-      'Capacitaciones en tecnología y herramientas digitales',
+      'ITIL',
+      'Power Automate',
+      'Power Apps',
+      'Power BI',
     ],
     iconName: 'GraduationCap',
-    badge: 'Gestión del Cambio',
+    badge: 'Formación Especializada',
     benefits: [
-      'Adopción natural y sin fricciones de los nuevos sistemas digitales',
-      'Autonomía de los equipos para sostener las mejoras en el tiempo',
-      'Cultura organizacional orientada al orden y la mejora continua',
+      'Desarrollo de capacidades internas',
+      'Mayor adopción de herramientas digitales',
+      'Mejora de procesos y toma de decisiones',
     ],
+    ctaText: 'Solicitar información sobre Capacitaciones',
+    image: {
+      url: 'https://res.cloudinary.com/agu65138/image/upload/q_auto,f_auto/v1789529750/Premium-panoramic-website-service-banner_3.png',
+      alt: 'Representación conceptual de formación técnica y transferencia progresiva de capacidades digitales para equipos',
+    },
   },
 ];
 

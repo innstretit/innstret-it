@@ -2,7 +2,11 @@ import React from 'react';
 import { Mail, MessageCircle, ArrowUp } from 'lucide-react';
 import { BRAND_DATA, SERVICES_DATA } from '../data/content';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onNavigate?: (path: string) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -18,7 +22,7 @@ export const Footer: React.FC = () => {
             <div className="bg-white p-2.5 rounded-xl inline-block mb-4 shadow-sm">
               <img
                 src={BRAND_DATA.logoUrl}
-                alt="INNSTRET IT"
+                alt="INNSTRET IT - Innovación y Transformación Digital"
                 className="h-10 w-auto object-contain"
                 referrerPolicy="no-referrer"
               />
@@ -122,11 +126,26 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* Bottom copyright and to-top */}
+        {/* Bottom copyright, legal and to-top */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 gap-4">
-          <p>
-            © {new Date().getFullYear()} INNSTRET IT. Todos los derechos reservados.
-          </p>
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1">
+            <p>
+              © {new Date().getFullYear()} INNSTRET IT. Todos los derechos reservados.
+            </p>
+            <span className="hidden sm:inline text-gray-600">·</span>
+            <a
+              href="/privacidad"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate('/privacidad');
+                }
+              }}
+              className="text-gray-400 hover:text-white underline-offset-4 hover:underline transition-colors"
+            >
+              Política de Privacidad
+            </a>
+          </div>
 
           <button
             onClick={scrollToTop}
