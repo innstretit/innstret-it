@@ -42,8 +42,7 @@ export default function App() {
       params.delete('p');
       const remainingQuery = params.toString() ? `?${params.toString()}` : '';
       const cleanRelative = p.startsWith('/') ? p : `/${p}`;
-      const basePath = window.location.pathname.includes('/innstret-it') ? '/innstret-it' : '';
-      window.history.replaceState({}, '', `${basePath}${cleanRelative}${remainingQuery}${window.location.hash}`);
+      window.history.replaceState({}, '', `${cleanRelative}${remainingQuery}${window.location.hash}`);
     }
 
     const handleLocationChange = () => {
@@ -60,8 +59,7 @@ export default function App() {
 
   const navigateTo = (path: string) => {
     setCurrentPath(path);
-    const basePath = window.location.pathname.includes('/innstret-it') ? '/innstret-it' : '';
-    const targetUrl = path === '/' ? (basePath || '/') : `${basePath}${path}`;
+    const targetUrl = path === '/' ? '/' : path;
     window.history.pushState({}, '', targetUrl);
     window.scrollTo({ top: 0, behavior: 'instant' });
   };

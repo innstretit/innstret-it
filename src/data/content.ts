@@ -21,7 +21,7 @@ export const BRAND_DATA = {
  * Actualiza 'siteUrl' aquí cuando se conecte el dominio personalizado definitivo.
  */
 export const SITE_CONFIG = {
-  siteUrl: 'https://innstretit.github.io/innstret-it',
+  siteUrl: 'https://innstret.com',
   ogImage: 'https://res.cloudinary.com/agu65138/image/upload/v1789506475/og-innstretit.jpg',
   title: 'INNSTRET IT | Procesos, Digitalización y Automatización',
   metaDescription: 'INNSTRET IT ayuda a empresas a optimizar procesos y operaciones mediante digitalización, automatización, gestión TI y soluciones tecnológicas prácticas.',
