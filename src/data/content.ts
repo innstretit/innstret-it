@@ -6,7 +6,7 @@ export const BRAND_DATA = {
   logoUrl: 'https://res.cloudinary.com/agu65138/image/upload/v1789506565/INNSTRET_HorizontalTransparenteLogo_1.png',
   whatsapp: '+51 958 092 111',
   whatsappRaw: '51958092111',
-  email: 'innstretit@gmail.com',
+  email: 'info@innstret.com',
   colors: {
     navy: '#00164A',
     blue: '#207BF8',
